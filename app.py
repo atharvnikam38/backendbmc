@@ -526,3 +526,6 @@ async def get_complaint_media(case_id: str):
             "pincode": case.get("pincode")
         }
     }
+@app.get("/health")
+def health_check():
+    return {"status": "I am awake!"}
