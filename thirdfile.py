@@ -172,12 +172,15 @@ def start_mongo_watcher():
                     }
                     
                     try:
-                        collection.insert_one(mongo_document)
-                        print(f"✅ Successfully inserted {case_id} into MongoDB!")
+                        # Use update_one to overwrite the existing Registered document
+                        collection.update_one(
+                            {"case_id": mongo_document["case_id"]},
+                            {"$set": mongo_document},
+                            upsert=True
+                        )
+                        print(f"✅ Successfully updated {mongo_document['case_id']} in MongoDB with AI data!")
                         
                         metadata["status"] = "Saved to DB"
-                        with open(json_path, "w", encoding="utf-8") as f:
-                            json.dump(metadata, f, indent=4, ensure_ascii=False)
                             
                     except Exception as e:
                         print(f"❌ Failed to insert/process {case_id}: {e}")
